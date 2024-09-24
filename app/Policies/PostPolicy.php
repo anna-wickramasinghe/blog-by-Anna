@@ -51,7 +51,7 @@ class PostPolicy
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function updatePost(User $user, Post $post)
+    public function update(User $user, Post $post)
     {
         return $user->id === $post->user_id;
     }
@@ -65,7 +65,7 @@ class PostPolicy
      */
     public function delete(User $user, Post $post)
     {
-        //
+        return $user->id === $post->user_id;
     }
 
     /**

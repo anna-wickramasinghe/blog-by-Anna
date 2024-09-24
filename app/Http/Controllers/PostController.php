@@ -25,7 +25,7 @@ class PostController extends Controller
 
     public function editPost(Request $request, Post $post)
     {
-        $this->authorize('updatePost', $post);
+        $this->authorize('update', $post);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -36,5 +36,14 @@ class PostController extends Controller
         $post->update($validated);
 
         return response()->json($post, 200);
+    }
+
+    public function deletePost(Post $post)
+    {
+        $this->authorize('delete', $post);
+
+        $post->delete();
+
+        return response()->json(['message' => 'Post deleted successfully'], 200);
     }
 }
