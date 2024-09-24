@@ -46,4 +46,17 @@ class PostController extends Controller
 
         return response()->json(['message' => 'Post deleted successfully'], 200);
     }
+
+
+    public function showAllPosts(Request $request)
+    {
+        $query = Post::where('status', 'published')->orderBy('created_at', 'desc');
+
+        if ($request->has('search')) {
+            $query->where('title', 'like', "%{$request->search}%");
+        }
+
+        $posts = $query->with('user', 'comments.user')->get();
+        return response()->json($posts);
+    }
 }
