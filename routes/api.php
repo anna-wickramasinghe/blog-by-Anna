@@ -17,11 +17,13 @@ use App\Http\Controllers\CommentController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+
+// public route for viewing posts
+Route::get('show-all-posts', [PostController::class, 'showAllPosts']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
@@ -29,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('create-post', [PostController::class, 'createPost']);
     Route::post('edit-post/{post}', [PostController::class, 'editPost']);
     Route::delete('delete-post/{post}', [PostController::class, 'deletePost']);
-    Route::get('show-all-posts', [PostController::class, 'showAllPosts']);
+    
 
     // comments
     Route::post('posts/{post}/create-comment', [CommentController::class, 'createComment']);
