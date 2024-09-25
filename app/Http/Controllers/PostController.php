@@ -51,15 +51,14 @@ class PostController extends Controller
     public function showAllPosts(Request $request)
     {
         // filtering on the status
-        $query = Post::where('status', $request->get('status', 'published'))
-                     ->orderBy('created_at', 'desc');
+        $query = Post::where('status', 'published')->orderBy('created_at', 'desc');
     
         // Apply search
         if ($request->has('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
     
-        $posts = $query->with(['user', 'comments.user'])->get();
+        $posts = $query->with(['user', 'comments.user'])->paginate(10);
     
         return response()->json($posts);
     }
