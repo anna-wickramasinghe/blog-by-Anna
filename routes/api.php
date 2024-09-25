@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('create-post', [PostController::class, 'createPost']);
     Route::post('edit-post/{post}', [PostController::class, 'editPost']);
     Route::delete('delete-post/{post}', [PostController::class, 'deletePost']);
+    Route::get('show-all-posts', [PostController::class, 'showAllPosts']);
+
+    // comments
+    Route::post('posts/{post}/create-comment', [CommentController::class, 'createComment']);
+    Route::put('/update-comment/{comment}', [CommentController::class, 'updateComment']);
+    Route::delete('/delete-comment/{comment}', [CommentController::class, 'deleteComment']);
 
 });
 
