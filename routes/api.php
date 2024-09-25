@@ -31,6 +31,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('create-post', [PostController::class, 'createPost']);
     Route::post('edit-post/{post}', [PostController::class, 'editPost']);
     Route::delete('delete-post/{post}', [PostController::class, 'deletePost']);
+
+    // show all the posts (published by defualt, drafts when the query parameter is present.)
+    Route::get('show-all-drafts-and-published-posts', [PostController::class, 'showAllDraftsandPublished']);
     
 
     // comments

@@ -62,4 +62,24 @@ class PostController extends Controller
     
         return response()->json($posts);
     }
+
+    public function showAllDraftsandPublished(Request $request)
+    {
+        // filtering on the status if query parameter for status is available
+        $query = Post::query()
+        ->when($request->has('status'), function ($q) use ($request) {
+            $q->where('status', $request->status);
+        }, function ($q) {
+            $q->where('status', 'published');
+        });
+
+        // Apply search 
+        if ($request->has('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        $posts = $query->with(['user', 'comments.user'])->orderBy('created_at', 'desc')->paginate(10);
+
+        return response()->json($posts);
+    }
 }
