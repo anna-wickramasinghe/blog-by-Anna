@@ -57,7 +57,7 @@ class CommentController extends Controller
         $post = $comment->post;;
 
         if ($comment->user_id === $user->id || $post->user_id === $user->id || $user->role === "admin") {
-            // $comment->delete();
+            $comment->delete();
             return response()->json(['message' => 'Comment deleted successfully'], 200);
         }
 
