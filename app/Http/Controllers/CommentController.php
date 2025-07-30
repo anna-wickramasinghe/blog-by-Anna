@@ -15,6 +15,10 @@ class CommentController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
+        if ($post->status !== "published") {
+            return response()->json(['message' => 'Cannot comment on an unpublished post'], 403);
+        }
+
         $userId =  auth()->id();
     
         $validated_data = $request->validate([
