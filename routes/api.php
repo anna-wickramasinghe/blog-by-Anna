@@ -22,24 +22,24 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
 // public route for viewing posts
-Route::get('show-all-posts', [PostController::class, 'showAllPosts']);
+Route::get('posts', [PostController::class, 'showAllPosts']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
     // posts
-    Route::post('create-post', [PostController::class, 'createPost']);
-    Route::post('edit-post/{post}', [PostController::class, 'editPost']);
-    Route::delete('delete-post/{post}', [PostController::class, 'deletePost']);
+    Route::post('/posts', [PostController::class, 'createPost']);
+    Route::patch('/posts/{post}', [PostController::class, 'editPost']);
+    Route::delete('/posts/{post}', [PostController::class, 'deletePost']);
 
     // show all the posts (published by defualt, drafts when the query parameter is present.)
-    Route::get('show-all-drafts-and-published-posts', [PostController::class, 'showAllDraftsandPublished']);
+    Route::get('/posts/with-drafts', [PostController::class, 'showAllDraftsandPublished']);
     
 
     // comments
-    Route::post('posts/{post}/create-comment', [CommentController::class, 'createComment']);
-    Route::put('/update-comment/{comment}', [CommentController::class, 'updateComment']);
-    Route::delete('/delete-comment/{comment}', [CommentController::class, 'deleteComment']);
+    Route::post('/posts/{post}/comments ', [CommentController::class, 'createComment']);
+    Route::patch('/comments/{comment}', [CommentController::class, 'updateComment']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'deleteComment']);
 
 });
 

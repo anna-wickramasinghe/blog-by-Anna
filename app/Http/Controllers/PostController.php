@@ -50,7 +50,7 @@ class PostController extends Controller
 
     public function showAllPosts(Request $request)
     {
-        // filtering on the status
+        // get all published posts
         $query = Post::where('status', 'published')->orderBy('created_at', 'desc');
     
         // Apply search
@@ -65,12 +65,15 @@ class PostController extends Controller
 
     public function showAllDraftsandPublished(Request $request)
     {
-        // filtering on the status if query parameter for status is available
+        // get all published posts by any user and draft posts by authenticated user
+        $user = $request->user();
         $query = Post::query()
-        ->when($request->has('status'), function ($q) use ($request) {
-            $q->where('status', $request->status);
-        }, function ($q) {
-            $q->where('status', 'published');
+        ->where(function ($q) use ($user) {
+            $q->where('status', 'published')
+              ->orWhere(function ($q2) use ($user) {
+                  $q2->where('status', 'draft')
+                     ->where('user_id', $user->id);
+              });
         });
 
         // Apply search 
