@@ -63,6 +63,24 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
+
+    public function show(Post $post)
+    {
+        // get a post by ID
+
+        // $post = Post::find($id);
+
+        // if (!$post || $post->status !=="published") {
+        //     return response()->json(['message' => 'Post not found'], 404);
+        // }
+        if ($post->status !== "published") {
+            return response()->json(['message' => 'this post is not published yet'], 404);
+        }
+    
+        return response()->json($post);
+    }
+
+
     public function indexWithDrafts(Request $request)
     {
         // get all published posts by any user and draft posts by authenticated user

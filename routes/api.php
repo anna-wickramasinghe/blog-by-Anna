@@ -23,21 +23,27 @@ Route::post('login', [AuthController::class, 'login']);
 
 // public route for viewing posts
 Route::get('posts', [PostController::class, 'index']);
+Route::get('posts/{post}', [PostController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
     // posts
-    Route::post('/posts', [PostController::class, 'store']);
-    Route::patch('/posts/{post}', [PostController::class, 'update']);
-    Route::delete('/posts/{post}', [PostController::class, 'destroy']);
+    Route::middleware(['role:author,admin'])->group(function () {
+        Route::post('/posts', [PostController::class, 'store']);
+        Route::patch('/posts/{post}', [PostController::class, 'update']);
+        Route::delete('/posts/{post}', [PostController::class, 'destroy']);
+    });
+    
 
     // get all published posts by any user and draft posts by authenticated user
     Route::get('/posts/with-drafts', [PostController::class, 'indexAllWithDrafts']);
     
 
     // comments
-    Route::post('/posts/{post}/comments ', [CommentController::class, 'store']);
+    Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
+    Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
+    Route::get('/posts/{post}/comments/{comment}', [CommentController::class, 'show']);
     Route::patch('/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 

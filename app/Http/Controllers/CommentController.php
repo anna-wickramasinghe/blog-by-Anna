@@ -62,4 +62,25 @@ class CommentController extends Controller
     }
 
 
+    public function show(Post $post, Comment $comment)
+    {
+        if ($comment->post_id !== $post->id) {
+            abort(404, 'Comment not found for this post.');
+        }
+
+        return response()->json($comment);
+    }
+
+
+    public function index(Post $post)
+    {
+        $comments = $post->comments()->latest()->get();
+
+        return response()->json([
+            'post_id' => $post->id,
+            'comments_count' => $comments->count(),
+            'comments' => $comments,
+        ]);
+    }
+
 }
