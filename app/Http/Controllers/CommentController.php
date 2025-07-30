@@ -9,7 +9,7 @@ use App\Models\Comment;
 class CommentController extends Controller
 {
 
-    public function createComment(Request $request, Post $post)
+    public function store(Request $request, Post $post)
     {
         if (!auth()->check()) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -29,7 +29,7 @@ class CommentController extends Controller
         return response()->json($comment, 201);
     }
 
-    public function updateComment(Request $request, Comment $comment)
+    public function update(Request $request, Comment $comment)
     {
         if ($comment->user_id !== auth()->id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
@@ -46,7 +46,7 @@ class CommentController extends Controller
         return response()->json(['message' => 'Comment updated successfully', 'comment' => $comment], 200);
     }
 
-    public function deleteComment(Comment $comment)
+    public function destroy(Comment $comment)
     {
         if ($comment->user_id !== auth()->id()) {
             return response()->json(['message' => 'Unauthorized'], 403);

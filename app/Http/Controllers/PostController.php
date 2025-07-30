@@ -10,7 +10,7 @@ class PostController extends Controller
 {
     
     // creates a new post
-    public function createPost(Request $request)
+    public function store(Request $request)
     {
         $validated_data = $request->validate([
             'title' => 'required|string|max:255',
@@ -23,7 +23,7 @@ class PostController extends Controller
         return response()->json($post, 201);
     }
 
-    public function editPost(Request $request, Post $post)
+    public function update(Request $request, Post $post)
     {
         $this->authorize('update', $post);
 
@@ -38,7 +38,7 @@ class PostController extends Controller
         return response()->json($post, 200);
     }
 
-    public function deletePost(Post $post)
+    public function destroy(Post $post)
     {
         $this->authorize('delete', $post);
 
@@ -48,7 +48,7 @@ class PostController extends Controller
     }
 
 
-    public function showAllPosts(Request $request)
+    public function index(Request $request)
     {
         // get all published posts
         $query = Post::where('status', 'published')->orderBy('created_at', 'desc');
@@ -63,7 +63,7 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
-    public function showAllDraftsandPublished(Request $request)
+    public function indexWithDrafts(Request $request)
     {
         // get all published posts by any user and draft posts by authenticated user
         $user = $request->user();
