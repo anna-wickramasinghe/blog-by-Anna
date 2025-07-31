@@ -56,7 +56,7 @@ class CommentController extends Controller
         $user = auth()->user();
         $post = $comment->post;;
 
-        if ($comment->user_id === $user->id || $post->user_id === $user->id || $user->role === "admin") {
+        if ($comment->user_id === $user->id || $post->user_id === $user->id || $user->isAdmin()) {
             $comment->delete();
             return response()->json(['message' => 'Comment deleted successfully'], 200);
         }
@@ -65,7 +65,7 @@ class CommentController extends Controller
     }
 
 
-    public function show(Post $post, Comment $comment)
+    public function show(Post $post, Comment $comment)//route model binding
     {
         if ($comment->post_id !== $post->id) {
             abort(404, 'Comment not found for this post.');

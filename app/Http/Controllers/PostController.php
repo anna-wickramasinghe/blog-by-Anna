@@ -14,8 +14,7 @@ class PostController extends Controller
     {
         $validated_data = $request->validate([
             'title' => 'required|string|max:255',
-            'body' => 'required|string',
-            'status' => 'required|in:published,draft',
+            'body' => 'required|string'
         ]);
 
         $post = auth()->user()->posts()->create($validated_data);
@@ -29,8 +28,7 @@ class PostController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'body' => 'required|string',
-            'status' => 'required|in:published,draft',
+            'body' => 'required|string'
         ]);
 
         $post->update($validated);
@@ -42,7 +40,7 @@ class PostController extends Controller
     {
         $user = auth()->user();
 
-        if($post->user_id === $user->id || $user->role === "admin"){
+        if($post->user_id === $user->id || $user->isAdmin()){
             $post->delete();
             return response()->json(['message' => 'Post deleted successfully'], 200);
         }
@@ -62,19 +60,16 @@ class PostController extends Controller
     
         $posts = $query->with(['user', 'comments.user'])->paginate(10);
     
-        return response()->json($posts);
+        return response()->json([
+             'posts_count' => $posts->count(),
+             'posts' => $posts
+            ]);
     }
 
 
     public function show(Post $post)
     {
         // get a post by ID
-
-        // $post = Post::find($id);
-
-        // if (!$post || $post->status !=="published") {
-        //     return response()->json(['message' => 'Post not found'], 404);
-        // }
         if ($post->status !== "published") {
             return response()->json(['message' => 'this post is not published yet'], 404);
         }
@@ -86,6 +81,7 @@ class PostController extends Controller
     public function indexWithDrafts(Request $request)
     {
         // get all published posts by any user and draft posts by authenticated user
+       
         $user = $request->user();
         $query = Post::query()
         ->where(function ($q) use ($user) {
@@ -103,6 +99,25 @@ class PostController extends Controller
 
         $posts = $query->with(['user', 'comments.user'])->orderBy('created_at', 'desc')->paginate(10);
 
-        return response()->json($posts);
+        return response()->json([
+             'posts_count' => $posts->count(),
+             'posts' => $posts
+            ]);
     }
+
+    public function publishPost(Post $post)
+    {
+        if (!auth()->user()->isAdmin()) {
+            return response()->json(['message' => 'Only admins can publish a post'], 403);
+        }
+
+        if ($post->status === 'published') {
+            return response()->json(['message' => 'Post is already published'], 200);
+        }
+
+        $post->update(['status' => 'published']);
+
+        return response()->json(['message' => 'Post published successfully'], 200);
+    }
+
 }
