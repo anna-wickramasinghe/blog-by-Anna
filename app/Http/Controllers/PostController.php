@@ -60,7 +60,10 @@ class PostController extends Controller
     
         $posts = $query->with(['user', 'comments.user'])->paginate(10);
     
-        return response()->json($posts);
+        return response()->json([
+             'posts_count' => $posts->count(),
+             'posts' => $posts
+            ]);
     }
 
 
@@ -75,9 +78,10 @@ class PostController extends Controller
     }
 
 
-    public function withDrafts(Request $request)
+    public function indexWithDrafts(Request $request)
     {
         // get all published posts by any user and draft posts by authenticated user
+       
         $user = $request->user();
         $query = Post::query()
         ->where(function ($q) use ($user) {
@@ -95,7 +99,10 @@ class PostController extends Controller
 
         $posts = $query->with(['user', 'comments.user'])->orderBy('created_at', 'desc')->paginate(10);
 
-        return response()->json($posts);
+        return response()->json([
+             'posts_count' => $posts->count(),
+             'posts' => $posts
+            ]);
     }
 
     public function publishPost(Post $post)
