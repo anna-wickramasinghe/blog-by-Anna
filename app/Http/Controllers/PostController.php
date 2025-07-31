@@ -43,7 +43,7 @@ class PostController extends Controller
         $user = auth()->user();
 
         if($post->user_id === $user->id || $user->role === "admin"){
-            // $post->delete();
+            $post->delete();
             return response()->json(['message' => 'Post deleted successfully'], 200);
         }
         return response()->json(['message' => 'Unauthorized'], 403);
