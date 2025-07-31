@@ -35,9 +35,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/posts/{post}', [PostController::class, 'destroy']);
     });
     
+    //publish posts
+    Route::patch('/posts/{post}/publish', [PostController::class, 'publishPost']);
 
     // get all published posts by any user and draft posts by authenticated user
-    Route::get('/posts/with-drafts', [PostController::class, 'indexAllWithDrafts']);
+    Route::get('/posts/withDrafts', [PostController::class, 'withDrafts']);
     
 
     // comments
