@@ -40,11 +40,13 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        $this->authorize('delete', $post);
+        $user = auth()->user();
 
-        $post->delete();
-
-        return response()->json(['message' => 'Post deleted successfully'], 200);
+        if($post->user_id === $user->id || $user->role === "admin"){
+            $post->delete();
+            return response()->json(['message' => 'Post deleted successfully'], 200);
+        }
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 
 

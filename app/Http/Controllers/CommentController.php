@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Comment;
+use App\Models\User;
 
 class CommentController extends Controller
 {
@@ -52,13 +53,15 @@ class CommentController extends Controller
 
     public function destroy(Comment $comment)
     {
-        if ($comment->user_id !== auth()->id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+        $user = auth()->user();
+        $post = $comment->post;;
+
+        if ($comment->user_id === $user->id || $post->user_id === $user->id || $user->role === "admin") {
+            $comment->delete();
+            return response()->json(['message' => 'Comment deleted successfully'], 200);
         }
 
-        $comment->delete();
-
-        return response()->json(['message' => 'Comment deleted successfully'], 200);
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 
 
