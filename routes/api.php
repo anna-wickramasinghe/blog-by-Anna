@@ -26,6 +26,10 @@ Route::middleware('throttle:custom_api_limiter')->group(function () {
     // public route for viewing post by ID
     Route::get('posts/{post}', [PostController::class, 'show']);
 
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail']);
+    Route::post('/reset-password', [AuthController::class, 'reset']);
+
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
 
