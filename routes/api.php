@@ -32,6 +32,7 @@ Route::middleware('throttle:custom_api_limiter')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
+        Route::patch('/profile', [AuthController::class, 'updateProfile']);
 
         // posts
         Route::middleware(['role:author,admin'])->group(function () {

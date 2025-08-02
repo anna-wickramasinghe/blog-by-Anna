@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -93,5 +94,38 @@ class AuthController extends Controller
             ? response()->json(['message' => 'Password has been reset.'])
             : response()->json(['message' => 'Invalid token or email.'], 400);
     }
+
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $data = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'cover_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
+        ]);
+
+        // Handle profile photo upload
+        if ($request->hasFile('profile_photo')) {
+            $profilePath = $request->file('profile_photo')->store('profile_photos', 'public');
+            $data['profile_photo'] = $profilePath;
+        }
+
+        // Handle cover photo upload
+        if ($request->hasFile('cover_photo')) {
+            $coverPath = $request->file('cover_photo')->store('cover_photos', 'public');
+            $data['cover_photo'] = $coverPath;
+        }
+
+        $user->update($data);
+
+        return response()->json([
+            'message' => 'Profile updated successfully.',
+            'user' => $user
+        ]);
+    }
+
 
 }
