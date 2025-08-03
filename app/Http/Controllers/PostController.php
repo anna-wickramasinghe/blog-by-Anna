@@ -55,7 +55,8 @@ class PostController extends Controller
     
         // Apply search
         if ($request->has('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where('title', 'like', '%' . $request->search . '%')
+                    ->orWhere('body', 'like', '%' . $request->search . '%');
         }
     
         $posts = $query->with(['user', 'comments.user'])->paginate(10);
