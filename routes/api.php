@@ -30,6 +30,8 @@ Route::middleware('throttle:custom_api_limiter')->group(function () {
             Route::post('/posts', [PostController::class, 'store']);
             Route::patch('/posts/{post}', [PostController::class, 'update']);
             Route::delete('/posts/{post}', [PostController::class, 'destroy']);
+            Route::get('/posts/export', [PostController::class, 'export']);
+            Route::post('/posts/import', [PostController::class, 'import']);
         });
         
         //publish posts

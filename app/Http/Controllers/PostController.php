@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Policies\PostPolicy\update;
+use App\Exports\UsersExport;
+use App\Imports\UsersImport;
 
 class PostController extends Controller
 {
@@ -119,6 +121,22 @@ class PostController extends Controller
         $post->update(['status' => 'published']);
 
         return response()->json(['message' => 'Post published successfully'], 200);
+    }
+
+    public function export()
+    {
+        return Excel::download(new PostsExport, 'posts.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,csv',
+        ]);
+
+        Excel::import(new PostsImport, $request->file('file'));
+
+        return response()->json(['message' => 'Post imported successfully'], 201);
     }
 
 }
